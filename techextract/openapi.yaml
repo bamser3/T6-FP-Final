@@ -1,0 +1,354 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: TechExtract API — Job Skill Extractor & Flashcard Generator
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: extract
+    description: Job skill extraction via Groq AI
+  - name: flashcards
+    description: Flashcard Q&A database
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /extract/text:
+    post:
+      operationId: extractFromText
+      tags: [extract]
+      summary: Extract tech skills from pasted job description text
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExtractTextInput"
+      responses:
+        "200":
+          description: Extracted skills
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtractionResult"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /extract/url:
+    post:
+      operationId: extractFromUrl
+      tags: [extract]
+      summary: Extract tech skills from a job posting URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExtractUrlInput"
+      responses:
+        "200":
+          description: Extracted skills
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtractionResult"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /flashcards:
+    get:
+      operationId: listFlashcards
+      tags: [flashcards]
+      summary: Get flashcards, optionally filtered by skills or category
+      parameters:
+        - name: skills
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Comma-separated list of skills to filter by
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: difficulty
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [beginner, intermediate, advanced]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: shuffle
+          in: query
+          required: false
+          schema:
+            type: string
+            default: "true"
+      responses:
+        "200":
+          description: List of flashcards
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FlashcardListResponse"
+
+  /flashcards/categories:
+    get:
+      operationId: listFlashcardCategories
+      tags: [flashcards]
+      summary: List all flashcard categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoriesResponse"
+
+  /flashcards/stats:
+    get:
+      operationId: getFlashcardStats
+      tags: [flashcards]
+      summary: Get question database statistics
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsResponse"
+
+  /flashcards/{id}:
+    get:
+      operationId: getFlashcard
+      tags: [flashcards]
+      summary: Get a single flashcard by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Flashcard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FlashcardResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+
+    ExtractTextInput:
+      type: object
+      required: [text]
+      properties:
+        text:
+          type: string
+          minLength: 20
+
+    ExtractUrlInput:
+      type: object
+      required: [url]
+      properties:
+        url:
+          type: string
+
+    SkillCategories:
+      type: object
+      properties:
+        languages:
+          type: array
+          items:
+            type: string
+        frameworks:
+          type: array
+          items:
+            type: string
+        databases:
+          type: array
+          items:
+            type: string
+        cloud:
+          type: array
+          items:
+            type: string
+        tools:
+          type: array
+          items:
+            type: string
+        methodologies:
+          type: array
+          items:
+            type: string
+        other:
+          type: array
+          items:
+            type: string
+
+    ExtractionResult:
+      type: object
+      required: [success, skills]
+      properties:
+        success:
+          type: boolean
+        source:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        categories:
+          $ref: "#/components/schemas/SkillCategories"
+        experience_level:
+          type: string
+        role_type:
+          type: string
+        summary:
+          type: string
+        url:
+          type: ["string", "null"]
+
+    Flashcard:
+      type: object
+      required: [id, category, skill, difficulty, question, answer]
+      properties:
+        id:
+          type: integer
+        category:
+          type: string
+        skill:
+          type: string
+        difficulty:
+          type: string
+        question:
+          type: string
+        answer:
+          type: string
+
+    FlashcardListResponse:
+      type: object
+      required: [success, total, questions]
+      properties:
+        success:
+          type: boolean
+        total:
+          type: integer
+        offset:
+          type: integer
+        limit:
+          type: integer
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Flashcard"
+
+    FlashcardResponse:
+      type: object
+      required: [success, question]
+      properties:
+        success:
+          type: boolean
+        question:
+          $ref: "#/components/schemas/Flashcard"
+
+    CategoryStat:
+      type: object
+      required: [category, count]
+      properties:
+        category:
+          type: string
+        count:
+          type: integer
+
+    StatsResponse:
+      type: object
+      required: [success, total, breakdown]
+      properties:
+        success:
+          type: boolean
+        total:
+          type: integer
+        breakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryStat"
+
+    CategoriesResponse:
+      type: object
+      required: [success, categories]
+      properties:
+        success:
+          type: boolean
+        categories:
+          type: array
+          items:
+            type: string
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
