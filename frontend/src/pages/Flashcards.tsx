@@ -18,14 +18,11 @@ const DIFFICULTY_COLORS = {
 
 const API = "/api";
 
-<<<<<<< HEAD
 function authHeaders(): HeadersInit {
   const token = localStorage.getItem("techextract_token");
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-=======
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
 export default function Flashcards() {
   const search = useSearch();
   const params = new URLSearchParams(search);
@@ -44,14 +41,10 @@ export default function Flashcards() {
     if (skillsParam) q.set("skills", skillsParam);
     if (categoryParam) q.set("category", categoryParam);
     if (difficulty) q.set("difficulty", difficulty);
-<<<<<<< HEAD
     fetch(`${API}/flashcards?${q}`, {
       headers: authHeaders(),
       credentials: "include",
     })
-=======
-    fetch(`${API}/flashcards?${q}`)
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
       .then((r) => r.json())
       .then((data) => { setCards(data.questions ?? []); setCurrentIndex(0); setIsFlipped(false); })
       .finally(() => setIsLoading(false));
@@ -143,8 +136,4 @@ export default function Flashcards() {
       <p className="text-center text-primary/20 text-xs mt-4 tracking-wider">KEYBOARD: SPACE = FLIP · ← → = NAVIGATE</p>
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8

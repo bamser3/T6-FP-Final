@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify, session
 from ..extensions import db
 from ..models import User
 from functools import wraps
-<<<<<<< HEAD
 import jwt
 import os
 from datetime import datetime, timezone, timedelta
@@ -21,16 +20,10 @@ def _make_token(user_id: int) -> str:
     }
     return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
-=======
-
-auth_bp = Blueprint("auth", __name__)
-
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
 
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-<<<<<<< HEAD
         # 1. Try Bearer token (persistent login)
         user_id = None
         auth_header = request.headers.get("Authorization", "")
@@ -51,24 +44,14 @@ def login_required(f):
         if not user_id:
             return jsonify({"error": "Authentication required"}), 401
 
-=======
-        user_id = session.get("user_id")
-        if not user_id:
-            return jsonify({"error": "Authentication required"}), 401
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
         user = User.query.get(user_id)
         if not user:
             session.clear()
             return jsonify({"error": "User not found"}), 401
-<<<<<<< HEAD
-
-=======
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
         return f(user, *args, **kwargs)
     return decorated
 
 
-<<<<<<< HEAD
 # ── Register ──────────────────────────────────────────────────────────────────
 @auth_bp.post("/register")
 def register():
@@ -76,14 +59,6 @@ def register():
     email    = (data.get("email")    or "").strip().lower()
     username = (data.get("username") or "").strip()
     password =  data.get("password") or ""
-=======
-@auth_bp.post("/register")
-def register():
-    data = request.get_json(silent=True) or {}
-    email = (data.get("email") or "").strip().lower()
-    username = (data.get("username") or "").strip()
-    password = data.get("password") or ""
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
 
     if not email or not username or not password:
         return jsonify({"error": "email, username, and password are required"}), 400
@@ -100,7 +75,6 @@ def register():
     db.session.commit()
 
     session["user_id"] = user.id
-<<<<<<< HEAD
     token = _make_token(user.id)
     return jsonify({"success": True, "user": user.to_dict(), "token": token}), 201
 
@@ -111,16 +85,6 @@ def login():
     data = request.get_json(silent=True) or {}
     email    = (data.get("email")    or "").strip().lower()
     password =  data.get("password") or ""
-=======
-    return jsonify({"success": True, "user": user.to_dict()}), 201
-
-
-@auth_bp.post("/login")
-def login():
-    data = request.get_json(silent=True) or {}
-    email = (data.get("email") or "").strip().lower()
-    password = data.get("password") or ""
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
 
     if not email or not password:
         return jsonify({"error": "email and password are required"}), 400
@@ -130,32 +94,22 @@ def login():
         return jsonify({"error": "Invalid email or password"}), 401
 
     session["user_id"] = user.id
-<<<<<<< HEAD
     token = _make_token(user.id)
     return jsonify({"success": True, "user": user.to_dict(), "token": token})
 
 
 # ── Logout ────────────────────────────────────────────────────────────────────
-=======
-    return jsonify({"success": True, "user": user.to_dict()})
-
-
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
 @auth_bp.post("/logout")
 def logout():
     session.clear()
     return jsonify({"success": True})
 
 
-<<<<<<< HEAD
 # ── Current user ──────────────────────────────────────────────────────────────
-=======
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
 @auth_bp.get("/me")
 @login_required
 def me(current_user):
     return jsonify({"success": True, "user": current_user.to_dict()})
-<<<<<<< HEAD
 
 
 # ── Update profile (username / email / password) ──────────────────────────────
@@ -208,5 +162,3 @@ def delete_me(current_user):
     db.session.commit()
     session.clear()
     return jsonify({"success": True, "message": "Account deleted"})
-=======
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
