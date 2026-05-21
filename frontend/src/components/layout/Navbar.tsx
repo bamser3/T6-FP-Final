@@ -1,4 +1,5 @@
 import { Link, useLocation } from "wouter";
+<<<<<<< HEAD
 import { useAuth } from "@/hooks/use-auth";
 
 export function Navbar() {
@@ -11,6 +12,11 @@ export function Navbar() {
         ? "text-primary glow border-b-2 border-primary pb-0.5"
         : "text-primary/60 hover:text-primary"
     }`;
+=======
+
+export function Navbar() {
+  const [location] = useLocation();
+>>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
 
   return (
     <header className="border-b border-primary/30 bg-black/80 backdrop-blur-md sticky top-0 z-50">
@@ -20,6 +26,7 @@ export function Navbar() {
             {">"} TechExtract_
           </span>
         </Link>
+<<<<<<< HEAD
 
         <nav className="flex items-center gap-6">
           <Link href="/"><span className={linkClass("/")}>[01] Extract</span></Link>
@@ -48,6 +55,19 @@ export function Navbar() {
               </button>
             )
           )}
+=======
+        <nav className="flex items-center gap-6">
+          <Link href="/">
+            <span className={`cursor-pointer uppercase text-sm tracking-wider ${location === "/" ? "text-primary glow border-b-2 border-primary" : "text-primary/60 hover:text-primary"}`}>
+              [01] Extract
+            </span>
+          </Link>
+          <Link href="/browse">
+            <span className={`cursor-pointer uppercase text-sm tracking-wider ${location === "/browse" ? "text-primary glow border-b-2 border-primary" : "text-primary/60 hover:text-primary"}`}>
+              [02] Database
+            </span>
+          </Link>
+>>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
         </nav>
       </div>
     </header>

@@ -6,12 +6,16 @@ import { Navbar } from "@/components/layout/Navbar";
 import Home from "@/pages/Home";
 import Flashcards from "@/pages/Flashcards";
 import Browse from "@/pages/Browse";
+<<<<<<< HEAD
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Profile from "@/pages/Profile";
 import { MatrixRain } from "@/MatrixRain";
 import { AuthProvider } from "@/hooks/use-auth";
 import { RequireAuth } from "@/components/RequireAuth";
+=======
+import { MatrixRain } from "@/MatrixRain";
+>>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
 
 function Router() {
   return (
@@ -22,6 +26,7 @@ function Router() {
         <Navbar />
         <main className="flex-1 container mx-auto p-4 md:p-6 lg:p-8">
           <Switch>
+<<<<<<< HEAD
             {/* Public routes */}
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
@@ -40,6 +45,11 @@ function Router() {
               <RequireAuth><Profile /></RequireAuth>
             </Route>
 
+=======
+            <Route path="/" component={Home} />
+            <Route path="/flashcards" component={Flashcards} />
+            <Route path="/browse" component={Browse} />
+>>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
             <Route component={NotFound} />
           </Switch>
         </main>
@@ -53,6 +63,7 @@ function App() {
     document.documentElement.classList.add("dark");
   }
   return (
+<<<<<<< HEAD
     <AuthProvider>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
@@ -61,6 +72,14 @@ function App() {
         <Toaster />
       </TooltipProvider>
     </AuthProvider>
+=======
+    <TooltipProvider>
+      <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+        <Router />
+      </WouterRouter>
+      <Toaster />
+    </TooltipProvider>
+>>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
   );
 }
 

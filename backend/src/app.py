@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from flask import Flask, jsonify
+=======
+from flask import Flask
+>>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
 from flask_cors import CORS
 from .extensions import db
 from .routes.auth import auth_bp
@@ -12,6 +16,7 @@ def create_app():
     app = Flask(__name__)
 
     app.config["SECRET_KEY"] = os.environ.get("SESSION_SECRET", "dev-secret-change-in-prod")
+<<<<<<< HEAD
 
     db_url = os.environ.get("DATABASE_URL", "")
 
@@ -25,6 +30,9 @@ def create_app():
         )
 
     # Normalise legacy postgres:// scheme
+=======
+    db_url = os.environ.get("DATABASE_URL", "")
+>>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
     if db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)
 
@@ -54,18 +62,27 @@ def create_app():
     CORS(app, supports_credentials=True, origins="*")
     db.init_app(app)
 
+<<<<<<< HEAD
     app.register_blueprint(auth_bp,        url_prefix="/api/auth")
     app.register_blueprint(extract_bp,     url_prefix="/api/extract")
     app.register_blueprint(flashcards_bp,  url_prefix="/api/flashcards")
+=======
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    app.register_blueprint(extract_bp, url_prefix="/api/extract")
+    app.register_blueprint(flashcards_bp, url_prefix="/api/flashcards")
+>>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
     app.register_blueprint(extractions_bp, url_prefix="/api/extractions")
 
     @app.get("/api/healthz")
     def health():
         return {"status": "ok"}
 
+<<<<<<< HEAD
     # Global 401 handler — return JSON not HTML
     @app.errorhandler(401)
     def unauthorized(e):
         return jsonify({"error": "Authentication required"}), 401
 
+=======
+>>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8
     return app
