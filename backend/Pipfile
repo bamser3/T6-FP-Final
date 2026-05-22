@@ -14,11 +14,9 @@ requests = "*"
 beautifulsoup4 = "*"
 gunicorn = "*"
 python-dotenv = "*"
+PyJWT = "==2.9.0"
 
 [dev-packages]
 
 [requires]
 python_version = "3.12"
-
-[packages]
-PyJWT = "==2.9.0"
