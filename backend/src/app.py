@@ -59,6 +59,7 @@ def create_app():
     app.register_blueprint(flashcards_bp,  url_prefix="/api/flashcards")
     app.register_blueprint(extractions_bp, url_prefix="/api/extractions")
 
+    @app.get("/healthz")
     @app.get("/api/healthz")
     def health():
         return {"status": "ok"}
