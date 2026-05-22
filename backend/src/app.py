@@ -54,10 +54,10 @@ def create_app():
     CORS(app, supports_credentials=True, origins="*")
     db.init_app(app)
 
-    app.register_blueprint(auth_bp,        url_prefix="/api/auth")
-    app.register_blueprint(extract_bp,     url_prefix="/api/extract")
-    app.register_blueprint(flashcards_bp,  url_prefix="/api/flashcards")
-    app.register_blueprint(extractions_bp, url_prefix="/api/extractions")
+    app.register_blueprint(auth_bp,        url_prefix="/auth")
+    app.register_blueprint(extract_bp,     url_prefix="/extract")
+    app.register_blueprint(flashcards_bp,  url_prefix="/flashcards")
+    app.register_blueprint(extractions_bp, url_prefix="/extractions")
 
     @app.get("/healthz")
     @app.get("/api/healthz")
