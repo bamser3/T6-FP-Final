@@ -1,3 +1,8 @@
+import subprocess
+import sys
+subprocess.check_call([sys.executable, "-m", "pip", "install", "PyJWT==2.9.0"])
+
+
 from dotenv import load_dotenv
 load_dotenv()
 
