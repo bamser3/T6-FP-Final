@@ -19,9 +19,6 @@ python-dotenv = "*"
 
 [requires]
 python_version = "3.12"
-<<<<<<< HEAD
 
 [packages]
 PyJWT = "==2.9.0"
-=======
->>>>>>> 32a8c637a5fefa3de0db62ac8676f127794edeb8

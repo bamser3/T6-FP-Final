@@ -38,7 +38,7 @@ def seed_if_needed():
                 print(f"Warning: could not seed questions: {e}")
 
 
-seed_if_needed()
+# seed_if_needed()
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
