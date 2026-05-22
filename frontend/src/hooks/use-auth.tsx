@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 const API = "/api";
-const TOKEN_KEY = "techextract_token";
 
 interface AuthUser {
   id: number;
@@ -28,47 +27,23 @@ interface UpdateProfileData {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-function getToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY);
-}
-
-function setToken(token: string) {
-  localStorage.setItem(TOKEN_KEY, token);
-}
-
-function removeToken() {
-  localStorage.removeItem(TOKEN_KEY);
-}
-
-function authHeaders(): HeadersInit {
-  const token = getToken();
-  return token
-    ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
-    : { "Content-Type": "application/json" };
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // On mount, restore session from saved token
   useEffect(() => {
     const restore = async () => {
-      const token = getToken();
-      if (!token) { setLoading(false); return; }
       try {
         const res = await fetch(`${API}/auth/me`, {
-          headers: authHeaders(),
           credentials: "include",
+          headers: { "Content-Type": "application/json" },
         });
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
-        } else {
-          removeToken();
         }
       } catch {
-        removeToken();
+        // no session, stay logged out
       } finally {
         setLoading(false);
       }
@@ -85,7 +60,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Login failed");
-    setToken(data.token);
     setUser(data.user);
   };
 
@@ -98,43 +72,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Registration failed");
-    setToken(data.token);
     setUser(data.user);
   };
 
   const logout = async () => {
     await fetch(`${API}/auth/logout`, {
       method: "POST",
-      headers: authHeaders(),
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
-    removeToken();
     setUser(null);
   };
 
   const updateProfile = async (payload: UpdateProfileData) => {
     const res = await fetch(`${API}/auth/me`, {
       method: "PUT",
-      headers: authHeaders(),
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify(payload),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Update failed");
-    setToken(data.token);
     setUser(data.user);
   };
 
   const deleteAccount = async (password: string) => {
     const res = await fetch(`${API}/auth/me`, {
       method: "DELETE",
-      headers: authHeaders(),
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({ password }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Delete failed");
-    removeToken();
     setUser(null);
   };
 
